@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-ink-950 text-zinc-100 font-sans antialiased;
+    background-image:
+      radial-gradient(1200px 500px at 85% -10%, rgba(225, 29, 46, 0.12), transparent 60%),
+      radial-gradient(900px 400px at -10% 10%, rgba(225, 29, 46, 0.06), transparent 60%);
+    background-attachment: fixed;
+  }
+  ::selection {
+    @apply bg-blood-500 text-white;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-blood-500 ring-offset-2 ring-offset-ink-950;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-white/5 bg-ink-900/80 shadow-[0_1px_0_rgba(255,255,255,0.03)_inset] backdrop-blur;
+  }
+  .card-hover {
+    @apply transition duration-200 hover:-translate-y-0.5 hover:border-blood-500/40 hover:shadow-[0_10px_30px_-10px_rgba(225,29,46,0.35)];
+  }
+  .eyebrow {
+    @apply font-display text-xs font-semibold uppercase tracking-[0.2em] text-blood-400;
+  }
+  .h-display {
+    @apply font-display font-bold uppercase tracking-wide;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-300;
+  }
+  .chip-red {
+    @apply border-blood-500/40 bg-blood-500/15 text-blood-400;
+  }
+  .chip-gold {
+    @apply border-amber-400/40 bg-amber-400/10 text-amber-300;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition;
+  }
+  .btn-primary {
+    @apply btn bg-blood-500 text-white hover:bg-blood-600;
+  }
+  .btn-ghost {
+    @apply btn border border-white/10 bg-white/5 text-zinc-200 hover:border-white/20 hover:bg-white/10;
+  }
+  .input {
+    @apply w-full rounded-lg border border-white/10 bg-ink-850 px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-blood-500/60 focus:outline-none;
+  }
+}
+
+@layer utilities {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #34343d;
+    border-radius: 999px;
+  }
+}
