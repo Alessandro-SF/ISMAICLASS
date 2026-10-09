@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { NavLink, Link, Outlet, useLocation } from 'react-router-dom'
+import { NavLink, Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '../auth/AuthProvider.jsx'
 import { DATA_RETRIEVED } from '../data/index.js'
 import { formatDate, getToday, getWindow, toISODate } from '../lib/dates.js'
 
@@ -14,7 +15,7 @@ const NAV = [
 
 function Logo() {
   return (
-    <Link to="/" className="flex items-center gap-2.5" aria-label="UFC Fight Tracker home">
+    <Link to="/" className="flex shrink-0 items-center gap-2.5 whitespace-nowrap" aria-label="UFC Fight Tracker home">
       <span className="grid h-9 w-9 place-items-center rounded-lg bg-blood-500 font-display text-lg font-bold text-white shadow-[0_0_20px_rgba(225,29,46,0.45)]">
         FT
       </span>
@@ -29,7 +30,31 @@ function Logo() {
 export default function Layout() {
   const [open, setOpen] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
+  const { user, loading, logout } = useAuth()
   const { start, end, today } = getWindow()
+
+  async function handleLogout() {
+    await logout()
+    setOpen(false)
+    navigate('/', { replace: true })
+  }
+
+  const account = user ? (
+    <>
+      <span className="min-w-0 max-w-[10rem] truncate text-xs text-zinc-400 xl:max-w-[14rem]" title={user.username}>
+        <span className="lg:hidden xl:inline">Signed in as </span>
+        <span className="font-semibold text-white">{user.username}</span>
+      </span>
+      <button type="button" onClick={handleLogout} className="btn-ghost shrink-0 whitespace-nowrap px-3 py-1.5 text-xs uppercase tracking-wider">
+        Log out
+      </button>
+    </>
+  ) : loading ? null : (
+    <Link to="/login" state={{ from: location.pathname + location.search }} className="btn-primary shrink-0 whitespace-nowrap px-3 py-1.5 text-xs uppercase tracking-wider">
+      Log in
+    </Link>
+  )
 
   useEffect(() => {
     setOpen(false)
@@ -37,7 +62,7 @@ export default function Layout() {
   }, [location.pathname])
 
   const linkClass = ({ isActive }) =>
-    `rounded-md px-3 py-2 text-sm font-semibold uppercase tracking-wide transition ${
+    `whitespace-nowrap rounded-md px-3 py-2 text-sm font-semibold uppercase tracking-wide transition lg:px-2 lg:text-[13px] xl:px-3 xl:text-sm ${
       isActive ? 'bg-blood-500/15 text-white' : 'text-zinc-400 hover:bg-white/5 hover:text-white'
     }`
 
@@ -46,13 +71,14 @@ export default function Layout() {
       <header className="sticky top-0 z-40 border-b border-white/5 bg-ink-950/85 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <Logo />
-          <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
+          <nav className="hidden items-center gap-0.5 lg:flex xl:gap-1" aria-label="Main">
             {NAV.map((n) => (
               <NavLink key={n.to} to={n.to} end={n.end} className={linkClass}>
                 {n.label}
               </NavLink>
             ))}
           </nav>
+          <div className="hidden min-w-0 items-center gap-3 lg:flex">{account}</div>
           <button
             type="button"
             className="btn-ghost px-3 lg:hidden"
@@ -74,6 +100,7 @@ export default function Layout() {
                   {n.label}
                 </NavLink>
               ))}
+              <div className="mt-2 flex items-center justify-between gap-3 border-t border-white/5 pt-3">{account}</div>
             </div>
           </nav>
         )}

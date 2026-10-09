@@ -23,6 +23,20 @@ from the UFC's official statistics provider.
 - **Dynamic date window**: the app shows events from two months before to two months after *today*. Add
   `?today=YYYY-MM-DD` to preview another reference date (e.g. `?today=2026-10-08`).
 
+## Accounts (optional login)
+
+Visitors can browse everything without an account. Anyone can **Create account** with a username and password
+(no email), then **Log in** and **Log out** from the header.
+
+- **Server-side auth:** a Netlify Function, `netlify/functions/auth.mjs`, served at `/api/auth/{register,login,logout,me}`.
+- **Storage:** accounts are stored in **Netlify Blobs** (store `ufc-auth`). Passwords are hashed with **scrypt** and a
+  random per-user salt, and plaintext passwords are never stored.
+- **Sessions:** an HMAC-signed `HttpOnly; Secure; SameSite=Lax` cookie that lasts 7 days. Page JavaScript can't read it.
+- **Signing secret:** generated automatically on first use and kept server-side in Blobs. To manage it yourself,
+  set a `SESSION_SECRET` environment variable in Netlify (a long random string).
+- **No extra setup:** Netlify Blobs and Functions are enabled automatically on Netlify sites.
+- **Tests:** `npm test` runs API tests against an in-memory store (`AUTH_STORE=memory`).
+
 ## Data
 
 | Source | Used for |
@@ -39,7 +53,7 @@ browser-accessible UFC API, so the app ships a dated snapshot rather than live d
 
 ## Tech stack
 
-React 18 · Vite 5 · Tailwind CSS 3 · Recharts · React Router 6. It is deployed on Netlify (see `netlify.toml`).
+React 18 · Vite 5 · Tailwind CSS 3 · Recharts · React Router 6 · Netlify Functions + Netlify Blobs (auth). It is deployed on Netlify (see `netlify.toml`).
 
 ## Development
 

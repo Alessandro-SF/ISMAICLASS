@@ -5,7 +5,12 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# Single-page app: send every route to index.html so deep links work.
+# Serverless auth API (netlify/functions/auth.mjs is served at /api/auth/*).
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Single-page app: send every other route to index.html so deep links work.
 [[redirects]]
   from = "/*"
   to = "/index.html"
